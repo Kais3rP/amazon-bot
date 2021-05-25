@@ -1,0 +1,32 @@
+extends layout
+
+block content
+  h1= title
+  form
+    each homepage in homepages
+      div(class="homepage-container")
+        label=homepage
+          input(name=homepage type="checkbox" checked)
+    each field in Object.entries(range)
+      div(class="field-container")
+        label(class="field-container")
+          h4=field[0]
+              h4="Min-Max"
+              input(type="text" name=field[0] value=`${field[1][0]}-${field[1][1]}`)
+    button(type="submit")="START CRAWL"
+  button(id="stop-btn")="STOP"
+  div 
+    h3 Status:
+    div(id="status")
+  div
+    h3 Crawl Round #:
+    div(id="round-counter") 0
+  div
+    h3 Searching on: 
+    div(id="homepage")
+  div 
+    h3 Searching Keywords:
+    div(id="keywords") 
+  div 
+    h3(id="link")
+  button(id="logs") Download Logs
