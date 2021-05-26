@@ -346,8 +346,10 @@ class Crawler {
       );
       console.log("HOMEPAGE: ", this.homepage, " CRAWLING HAS ENDED");
     } catch (e) {
-      this.socket.emit("abort")
+      this.socket.emit("abort");
       throw new Error(`SOMETHING WENT WRONG DURING CRAWLING:\n ${e}`);
+    } finally {
+      this.browser.close();
     }
   }
 }

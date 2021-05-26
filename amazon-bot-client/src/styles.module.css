@@ -26,6 +26,7 @@
     font-size: 0.9rem;
     background-color: var(--secondary);
     padding: 3px 5px 3px 17px;
+    z-index: 2;
 }
 
 .currency {
@@ -40,7 +41,19 @@ font-size: 0.9rem; */
     margin-top: 15px;
     padding: 7px;
     width: 100%;
+    /* display: flex;
+    justify-content: center; */
    /*  max-width: 300px; */
+}
+
+.format {
+    position: absolute;
+    top:-5px;
+    left:50px;
+    background-color: var(--secondary);
+    padding: 3px 5px 3px 17px;
+    z-index: 2;
+
 }
 
 .start {

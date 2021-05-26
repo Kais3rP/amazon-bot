@@ -53,6 +53,7 @@ function App() {
   const [itemFound, setItemFound] = useState(null);
   const [currentHomepage, setCurrentHomepage] = useState("");
   const [itemsBought, setItemsBought] = useState([]);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   //HANDLERS
 
@@ -76,7 +77,10 @@ function App() {
     console.log("STOP CLICKED");
     socketRef.current.emit("abort");
     setIsAborting(true);
-    abortTimeoutRef.current = setTimeout(() => setIsAborting(false), 10000);
+    abortTimeoutRef.current = setTimeout(() => {
+      setIsActive(false);
+      setIsAborting(false);
+    }, 15000);
     //isActive is set to falseonly when asynchronously receiving the abort message from server
   }
 
@@ -184,41 +188,37 @@ function App() {
                       ))}
                     </Col>
                     <Col xs={12} className={styles.line}></Col>
-                    {/*   <Col xs={12}>
-                      <Row>
-                        <Col xs={3} md={2} xl={1}>
-                          <h2>Keyword:</h2>
-                        </Col>
-                        <Col>
-                          <h2>Price: min - max</h2>
-                        </Col>
-                      </Row>
-                    </Col> */}
                     <Col>
                       {Object.entries(range).map((field) => (
                         <Row>
-                          {/*   <Col xs={3} md={2} xl={1}>
-                            {" "}
-                            <h4>{field[0]}</h4>
-                          </Col> */}
                           <Col xs={12} className={styles.fieldContainer}>
-                            {" "}
-                            <span>   <h4 className={styles.keyword}>{field[0]}</h4>
-                            <span className={styles.currency}>€</span>
-                            <input
-                              className={styles.price}
-                              type="text"
-                              name={field[0]}
-                              defaultValue={`${field[1][0]}-${field[1][1]}`}
-                            /></span>
-                         
+                            <span
+                              onMouseEnter={() => setShowTooltip(field[0])}
+                              onMouseOut={() => setShowTooltip(null)}
+                            >
+                              <h4 className={styles.keyword}>{field[0]}</h4>
+                              <span className={styles.currency}>€</span>
+                              {showTooltip === field[0] && (
+                                <span className={styles.format}>
+                                  ( Format: xxx-yyy )
+                                </span>
+                              )}
+                              <input
+                                className={styles.price}
+                                type="text"
+                                name={field[0]}
+                                defaultValue={`${field[1][0]}-${field[1][1]}`}
+                              />
+                            </span>
                           </Col>
                         </Row>
                       ))}
                     </Col>
                   </Row>
 
-                  <button className={styles.start} type="submit">START CRAWL</button>
+                  <button className={styles.start} type="submit">
+                    START CRAWL
+                  </button>
                 </form>
               ) : (
                 <>
