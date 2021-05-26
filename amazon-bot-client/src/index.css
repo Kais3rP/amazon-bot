@@ -1,8 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@300&family=Odibee+Sans&display=swap');
+
+:root {
+--primary : rgb(255, 228, 52);
+--secondary: rgba(255, 128, 0, 0.383);
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Big Shoulders Display', cursive, 'Odibee Sans', cursive !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -10,4 +15,17 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+button {
+  color : rgb(0, 0, 0);
+  background-color: var(--secondary);
+  padding: 5px;
+}
+
+input {
+  border: none;
+  border-bottom: 2px solid black;
+  background-color: var(--primary);
+  padding:0px 10px 0px 10px;
 }

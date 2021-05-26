@@ -5,6 +5,8 @@ import { Row, Col, Container } from "react-bootstrap";
 import { saveAs } from "file-saver";
 import Loader from "react-loader-spinner";
 
+const beURL = "http://localhost:3000";
+
 const homepages = [
   "https://www.amazon.it",
   "https://www.amazon.es",
@@ -26,9 +28,11 @@ const range = {
 
 function App() {
   const socketRef = useRef();
+  const abortTimeoutRef = useRef(null);
+
   useEffect(() => {
     //init socketio
-    socketRef.current = io("http://localhost:3000");
+    socketRef.current = io(beURL);
     const socket = socketRef.current;
     socket.on("status-change", onStatusChange);
     socket.on("round", onRoundComplete);
@@ -72,6 +76,7 @@ function App() {
     console.log("STOP CLICKED");
     socketRef.current.emit("abort");
     setIsAborting(true);
+    abortTimeoutRef.current = setTimeout(() => setIsAborting(false), 10000);
     //isActive is set to falseonly when asynchronously receiving the abort message from server
   }
 
@@ -118,6 +123,7 @@ function App() {
   }
 
   function onAbort() {
+    clearTimeout(abortTimeoutRef.current);
     setIsActive(false);
     setIsAborting(false);
     setItemsBought([]);
@@ -141,54 +147,78 @@ function App() {
             </>
           ) : (
             <>
-              {" "}
-              <h1>Amazon Crawler</h1>
+              <Row>
+                <Col className="d-flex align-items-start">
+                  <h1>Amazon Crawler</h1>
+                  <img
+                    style={{ width: "85px", marginTop: "-1px" }}
+                    src="/amazon.png"
+                    alt="logo"
+                  />
+                </Col>
+                <Col xs={12} className={styles.line}></Col>
+              </Row>
               {!isActive ? (
                 <form onSubmit={onSubmit}>
                   <Row>
-                    <Col>
+                    <Col xs={12} className={styles.homepageContainer}>
                       {homepages.map((homepage) => (
-                        <Row className={styles.homepageContainer}>
-                          <Col>
-                            <label>
-                              {homepage}
-                              <input
-                                name={homepage}
-                                type={"checkbox"}
-                                defaultChecked
-                              />
-                            </label>
+                        <Row>
+                          <Col
+                            xs={3}
+                            md={2}
+                            xl={1}
+                            className="d-flex align-items-center"
+                          >
+                            <label className="">{homepage}</label>
+                          </Col>
+                          <Col xs={9} md={10} xl={11}>
+                            <input
+                              className={styles.checkBox}
+                              name={homepage}
+                              type={"checkbox"}
+                              defaultChecked
+                            />
                           </Col>
                         </Row>
                       ))}
+                    </Col>
+                    <Col xs={12} className={styles.line}></Col>
+                    {/*   <Col xs={12}>
                       <Row>
-                        <Col>
+                        <Col xs={3} md={2} xl={1}>
                           <h2>Keyword:</h2>
                         </Col>
                         <Col>
                           <h2>Price: min - max</h2>
                         </Col>
                       </Row>
+                    </Col> */}
+                    <Col>
                       {Object.entries(range).map((field) => (
-                        <Row className={styles.fieldContainer}>
-                          <Col>
+                        <Row>
+                          {/*   <Col xs={3} md={2} xl={1}>
                             {" "}
                             <h4>{field[0]}</h4>
-                          </Col>
-                          <Col>
+                          </Col> */}
+                          <Col xs={12} className={styles.fieldContainer}>
                             {" "}
+                            <span>   <h4 className={styles.keyword}>{field[0]}</h4>
+                            <span className={styles.currency}>€</span>
                             <input
+                              className={styles.price}
                               type="text"
                               name={field[0]}
                               defaultValue={`${field[1][0]}-${field[1][1]}`}
-                            />
+                            /></span>
+                         
                           </Col>
                         </Row>
                       ))}
                     </Col>
                   </Row>
 
-                  <button type="submit">START CRAWL</button>
+                  <button className={styles.start} type="submit">START CRAWL</button>
                 </form>
               ) : (
                 <>
