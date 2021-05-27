@@ -4,6 +4,7 @@ import { io } from "socket.io-client";
 import { Row, Col, Container } from "react-bootstrap";
 import { saveAs } from "file-saver";
 import Loader from "react-loader-spinner";
+import { IoLogoEuro } from "react-icons/io";
 
 const beURL = "http://localhost:3000";
 
@@ -42,6 +43,8 @@ function App() {
     socket.on("error", onError);
     socket.on("logs", onLogsRetrieved);
     socket.on("abort", onAbort);
+
+    return () => socket.disconnect();
   }, []);
   // SOCKET LISTENING EVENTS
 
@@ -151,32 +154,24 @@ function App() {
             </>
           ) : (
             <>
-              <Row>
-                <Col className="d-flex align-items-start">
-                  <h1>Amazon Crawler</h1>
-                  <img
-                    style={{ width: "85px", marginTop: "-1px" }}
-                    src="/amazon.png"
-                    alt="logo"
-                  />
-                </Col>
-                <Col xs={12} className={styles.line}></Col>
-              </Row>
               {!isActive ? (
                 <form onSubmit={onSubmit}>
                   <Row>
-                    <Col xs={12} className={styles.homepageContainer}>
+                    <Col xs={12} className={styles.line}></Col>
+                    <Col xs={6} className={styles.logoContainer}>
+                      <h1>Amazon Crawler</h1>
+                      <img
+                        className={styles.logo}
+                        style={{ width: "85px", marginTop: "-1px" }}
+                        src="/amazon.png"
+                        alt="logo"
+                      />
+                    </Col>
+                    <Col xs={6} className={styles.homepageContainer}>
                       {homepages.map((homepage) => (
                         <Row>
-                          <Col
-                            xs={3}
-                            md={2}
-                            xl={1}
-                            className="d-flex align-items-center"
-                          >
+                          <Col xs={12} className="d-flex align-items-center">
                             <label className="">{homepage}</label>
-                          </Col>
-                          <Col xs={9} md={10} xl={11}>
                             <input
                               className={styles.checkBox}
                               name={homepage}
@@ -188,19 +183,23 @@ function App() {
                       ))}
                     </Col>
                     <Col xs={12} className={styles.line}></Col>
-                    <Col>
-                      {Object.entries(range).map((field) => (
-                        <Row>
-                          <Col xs={12} className={styles.fieldContainer}>
-                            <span
-                              onMouseEnter={() => setShowTooltip(field[0])}
-                              onMouseOut={() => setShowTooltip(null)}
-                            >
+                    <Col className="d-flex flex-column justify-content-center align-items-center">
+                      <Row>
+                        {Object.entries(range).map((field) => (
+                          <Col
+                            onMouseEnter={() => setShowTooltip(field[0])}
+                            onMouseLeave={() => setShowTooltip(null)}
+                            xs={12}
+                            className={styles.fieldContainer}
+                          >
+                            <div>
                               <h4 className={styles.keyword}>{field[0]}</h4>
-                              <span className={styles.currency}>€</span>
+                              <span className={styles.currency}>
+                                <IoLogoEuro />
+                              </span>
                               {showTooltip === field[0] && (
                                 <span className={styles.format}>
-                                  ( Format: xxx-yyy )
+                                  ( <u>Format:</u> xxx-yyy )
                                 </span>
                               )}
                               <input
@@ -209,46 +208,85 @@ function App() {
                                 name={field[0]}
                                 defaultValue={`${field[1][0]}-${field[1][1]}`}
                               />
-                            </span>
+                            </div>
                           </Col>
-                        </Row>
-                      ))}
+                        ))}
+                        <Col
+                          xs={12}
+                          className="d-flex flex-column justify-content-center align-items-center"
+                        >
+                          {" "}
+                          <button className={styles.start} type="submit">
+                            START CRAWL
+                          </button>
+                        </Col>
+                      </Row>
                     </Col>
                   </Row>
-
-                  <button className={styles.start} type="submit">
-                    START CRAWL
-                  </button>
                 </form>
               ) : (
                 <>
-                  <div>
-                    <h3> Status:</h3>
-                    {status}
-                  </div>
-                  <div>
-                    <h3> Crawl Round:</h3>
-                    {counter}
-                  </div>
-                  <div>
-                    <h3> Searching on:</h3>
-                    {currentHomepage}
-                  </div>
-                  <div>
-                    <h3> Searching Keywords:</h3>
-                    {keywords}
-                  </div>
-                  <div>
-                    <h3> Item Found:</h3>
-                    {itemFound}
-                  </div>
-                  <div>
-                    <h3>Items Bought:</h3>
-                    {itemsBought}
-                  </div>
+                  <Row>
+                    <Col xs={12} className={styles.line}></Col>
+                    <Col xs={6} className={styles.logoContainer}>
+                      <h1>Amazon Crawler</h1>
+                      <img
+                        className={styles.logo}
+                        style={{ width: "85px", marginTop: "-1px" }}
+                        src="/amazon.png"
+                        alt="logo"
+                      />
+                    </Col>
+                    <Col xs={12} className={styles.line}></Col>
+                    <Col xs={12}>
+                      <div className="d-flex align-items-center">
+                        <h3> Status:</h3>
+                        <Load />
+                      </div>
 
-                  <button onClick={retrieveLogs}>Download Logs</button>
-                  <button onClick={socketStop}>STOP CRAWL</button>
+                      {status}
+                    </Col>
+
+                    <Col xs={12}>
+                      <div className="d-flex align-items-center">
+                        <h3> Crawl Round:</h3>
+                        <Load />
+                      </div>
+                      {counter}
+                    </Col>
+                    <Col xs={12}>
+                      <div className="d-flex align-items-center">
+                        <h3> Searching on:</h3>
+                        <Load />
+                      </div>
+                      {currentHomepage}
+                    </Col>
+                    <Col xs={12}>
+                      <div className="d-flex align-items-center">
+                        <h3> Searching Keywords:</h3>
+                        <Load />
+                      </div>
+                      {keywords}
+                    </Col>
+                    <Col xs={12}>
+                      <div className="d-flex align-items-center">
+                        <h3> Item Found:</h3>
+                        <Load />
+                      </div>
+                      {itemFound}
+                    </Col>
+                    <Col xs={12}>
+                      <div className="d-flex align-items-center">
+                        <h3>Items Bought:</h3>
+                        <Load />
+                      </div>
+                      {itemsBought}
+                    </Col>
+                    <Col xs={12}>
+                      <button onClick={retrieveLogs}>Download Logs</button>
+                      <button onClick={socketStop}>STOP CRAWL</button>
+                    </Col>
+                  </Row>
                 </>
               )}
             </>
@@ -257,6 +295,10 @@ function App() {
       </Row>
     </Container>
   );
+}
+
+function Load() {
+  return <div className={styles.load}></div>;
 }
 
 export default App;

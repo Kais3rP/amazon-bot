@@ -5,7 +5,7 @@ const path = require("path");
 function initIo(server) {
   const io = require("socket.io")(server, {
     cors: {
-      origin: "http://localhost:3001",
+      origin: "*",
       methods: ["GET", "POST"],
     },
   });

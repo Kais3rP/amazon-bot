@@ -2,10 +2,25 @@
     padding: 10px;
 }
 
-.fieldContainer {}
+.logoContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 
-.fieldContainer>span {
+.logo {}
+
+.fieldContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.fieldContainer>div {
     position: relative;
+    width: 100%;
+    max-width: 300px;
+    margin-top: 10px;
 }
 
 .checkBox {
@@ -20,7 +35,7 @@
 
 .keyword {
     position: absolute;
-    top: -17px;
+    top: -5px;
     right: -10px;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif !important;
     font-size: 0.9rem;
@@ -31,32 +46,63 @@
 
 .currency {
     position: absolute;
-    top: 0px;
-    left: 20%;
+    top: 5px;
+    left: 25%;
     /* font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif !important;
 font-size: 0.9rem; */
 }
 
 .price {
-    margin-top: 15px;
     padding: 7px;
     width: 100%;
-    /* display: flex;
-    justify-content: center; */
-   /*  max-width: 300px; */
 }
 
 .format {
     position: absolute;
-    top:-5px;
-    left:50px;
+    top: 5px;
+    left: 90px;
     background-color: var(--secondary);
     padding: 3px 5px 3px 17px;
     z-index: 2;
-
 }
 
 .start {
     width: 100%;
+    max-width: 300px;
     margin-top: 15px;
+}
+
+.load {
+    width: 17px;
+    height: 1px;
+    background-color: black;
+    animation: spin 1.5s infinite;
+    margin-left:10px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(45deg);
+    }
+    15% {
+        transform: rotate(90deg);
+    }
+    30% {
+        transform: rotate(135deg);
+    }
+    45% {
+        transform: rotate(180deg);
+    }
+    60% {
+        transform: rotate(225deg);
+    }
+    75% {
+        transform: rotate(270deg);
+    }
+    90% {
+        transform: rotate(325deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

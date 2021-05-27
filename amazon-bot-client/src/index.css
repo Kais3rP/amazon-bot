@@ -10,6 +10,7 @@ body {
   font-family: 'Big Shoulders Display', cursive, 'Odibee Sans', cursive !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  width:350px;
 }
 
 code {
