@@ -1,6 +1,7 @@
 const Crawler = require("../core");
 const { readFile, readdir, writeFile } = require("fs/promises");
 const path = require("path");
+const { formatDate } = require("../utils");
 
 function initIo(server) {
   const io = require("socket.io")(server, {
@@ -64,10 +65,16 @@ function initIo(server) {
     //## RETRIEVE LOGS EVENT
 
     socket.on("retrieve-logs", async (range) => {
-      console.log("RETRIEVING LOGS...");
+      console.log("RETRIEVING LOGS...", range);
       const dir = path.join(process.cwd(), "logs");
       //GET ALL THE LOGS REQUESTED
-      const fileNames = await readdir(dir);
+      let fileNames = await readdir(dir);
+      fileNames = fileNames.filter(
+        (name) =>
+          new Date(name.split("--")[0]) >= new Date(range[0]) &&
+          new Date(name.split("--")[0]) <= new Date(range[1])
+      );
+      console.log(fileNames);
       const files = [];
       for (const name of fileNames) {
         const file = await readFile(path.join(dir, name));
@@ -75,10 +82,7 @@ function initIo(server) {
       }
       const finalFile = Buffer.concat(files);
       //WRITE THE BUFFER TO A FILE
-      const filePath = path.join(
-        dir,
-        `${new Date().toLocaleDateString().replace(/\//g, "-")}.txt`
-      );
+      const filePath = path.join(dir, `${formatDate(new Date())}.txt`);
       await writeFile(filePath, finalFile);
       console.log("PATH", filePath);
       socket.emit("logs", finalFile);

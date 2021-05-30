@@ -14,6 +14,11 @@ function normalizePort(val) {
   return false;
 }
 
+function formatDate(date) {
+  return date.toLocaleDateString().replace(/\//g, "-");
+}
+
 module.exports = {
   normalizePort,
+  formatDate,
 };

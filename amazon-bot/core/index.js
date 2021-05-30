@@ -317,7 +317,7 @@ class Crawler {
       const _path = path.join(
         process.cwd(),
         "logs",
-        `log-${new Date().toLocaleString().replace(/[\/,\s:]/g, "-")}.txt`
+        `${new Date().toLocaleString().replace(/[\/,\s:]/g, "-")}.txt`
       );
       console.log("SAVING LOG", _path);
       await writeFile(_path, this.itemsBought);
