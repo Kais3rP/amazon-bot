@@ -178,10 +178,8 @@ class Crawler {
       await currentPage.click("#p_36\\/price-range input[type='submit']");
       await currentPage.waitForNavigation({ timeout: 10000 });
     } catch (e) {
-      console.log(
-        new Error(
-          `Couldn't filter the results in ${this.homepage},\n reason:\n ${e}`
-        )
+      throw new Error(
+        `Couldn't filter the results in ${this.homepage},\n reason:\n ${e}`
       );
     }
   }

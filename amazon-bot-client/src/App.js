@@ -31,6 +31,18 @@ function App() {
   const socketRef = useRef();
   const abortTimeoutRef = useRef(null);
 
+  // SOCKET LISTENING EVENTS
+
+  const [isActive, setIsActive] = useState(false);
+  const [isAborting, setIsAborting] = useState(false);
+  const [counter, setCounter] = useState(0);
+  const [keywords, setKeywords] = useState([]);
+  const [status, setStatus] = useState("");
+  const [itemFound, setItemFound] = useState(null);
+  const [currentHomepage, setCurrentHomepage] = useState("");
+  const [itemsBought, setItemsBought] = useState([]);
+  const [showTooltip, setShowTooltip] = useState(false);
+
   useEffect(() => {
     //init socketio
     socketRef.current = io(beURL);
@@ -46,17 +58,13 @@ function App() {
 
     return () => socket.disconnect();
   }, []);
-  // SOCKET LISTENING EVENTS
 
-  const [isActive, setIsActive] = useState(false);
-  const [isAborting, setIsAborting] = useState(false);
-  const [counter, setCounter] = useState(0);
-  const [keywords, setKeywords] = useState([]);
-  const [status, setStatus] = useState("");
-  const [itemFound, setItemFound] = useState(null);
-  const [currentHomepage, setCurrentHomepage] = useState("");
-  const [itemsBought, setItemsBought] = useState([]);
-  const [showTooltip, setShowTooltip] = useState(false);
+  useEffect(() => {
+    if (!isActive) {
+      setItemFound(null);
+      setItemsBought([]);
+    }
+  }, [isActive]);
 
   //HANDLERS
 
@@ -125,8 +133,12 @@ function App() {
     console.log(file);
     saveAs(file, "log.txt");
   }
-  async function retrieveLogs() {
-    socketRef.current.emit("retrieve-logs");
+  async function onRetrieveLogsSubmit(e) {
+    e.preventDefault();
+    console.log([...new FormData(e.target)]);
+    const data = [...new FormData(e.target)];
+    const range = [data[0][1], data[1][1]];
+    socketRef.current.emit("retrieve-logs", range);
   }
 
   function onAbort() {
@@ -142,16 +154,22 @@ function App() {
       <Row>
         <Col>
           {isAborting ? (
-            <>
-              <Loader
-                type="Puff"
-                color="#00BFFF"
-                height={100}
-                width={100}
-                timeout={20000} //3 secs
-              />
-              "Aborting..."
-            </>
+            <Row>
+              <Col
+                style={{ height: "100vh" }}
+                className="d-flex justify-content-center align-items-center"
+                xs={12}
+              >
+                <Loader
+                  type="Puff"
+                  color="#00BFFF"
+                  height={100}
+                  width={100}
+                  timeout={20000} //3 secs
+                />
+                <h5>"Aborting..."</h5>
+              </Col>
+            </Row>
           ) : (
             <>
               {!isActive ? (
@@ -273,17 +291,32 @@ function App() {
                         <h3> Item Found:</h3>
                         <Load />
                       </div>
-                      {itemFound}
+                      <a href={itemFound} target="_blank" rel="noreferrer">
+                        {itemFound}
+                      </a>
                     </Col>
                     <Col xs={12}>
                       <div className="d-flex align-items-center">
                         <h3>Items Bought:</h3>
                         <Load />
                       </div>
-                      {itemsBought}
+                      {itemsBought.map((href) => (
+                        <a href={href} target="_blank" rel="noreferrer">
+                          {href}
+                        </a>
+                      ))}
                     </Col>
                     <Col xs={12}>
-                      <button onClick={retrieveLogs}>Download Logs</button>
+                      <Row>
+                        <Col>
+                          <form onSubmit={onRetrieveLogsSubmit}>
+                            <input name="start-date" type="date" />
+                            <input name="end-date" type="date" />
+                            <button type="submit">Download Logs</button>
+                          </form>
+                        </Col>
+                      </Row>
+
                       <button onClick={socketStop}>STOP CRAWL</button>
                     </Col>
                   </Row>
@@ -302,3 +335,7 @@ function Load() {
 }
 
 export default App;
+
+/* function formatDate(date) {
+  return new Date(date).toLocaleDateString("it-IT").replace(/\//g, "-");
+} */
